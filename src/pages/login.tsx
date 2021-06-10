@@ -1,12 +1,14 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, Flex, Link } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import React from "react";
 import { useRouter } from "next/router";
-import { toErrorMap } from "../../utils/to-error-map";
+import { toErrorMap } from "../utils/to-error-map";
 import { InputField } from "../components/InputField";
 import { Wrapper } from "../components/Wrapper";
 import { useLoginMutation } from "../generated/graphql";
-
+import { withUrqlClient } from "next-urql";
+import { createUrqlClient } from "../utils/create-urql-client";
+import NextLink from "next/link";
 interface loginProps {}
 
 export const Login: React.FC<{}> = ({}) => {
@@ -15,9 +17,9 @@ export const Login: React.FC<{}> = ({}) => {
 	return (
 		<Wrapper variant="small">
 			<Formik
-				initialValues={{ username: "", password: "" }}
+				initialValues={{ usernameOrEmail: "", password: "" }}
 				onSubmit={async (values, { setErrors }) => {
-					const response = await login({ options: values });
+					const response = await login(values);
 					console.log(response);
 					if (response.data?.login.errors) {
 						setErrors(toErrorMap(response.data.login.errors));
@@ -29,9 +31,9 @@ export const Login: React.FC<{}> = ({}) => {
 				{({ isSubmitting }) => (
 					<Form>
 						<InputField
-							name="username"
-							placeholder="username"
-							label="Username"
+							name="usernameOrEmail"
+							placeholder="username or email"
+							label="Username or Email"
 						/>
 						<Box mt={4}>
 							<InputField
@@ -41,6 +43,11 @@ export const Login: React.FC<{}> = ({}) => {
 								type="password"
 							/>
 						</Box>
+						<Flex mt="2">
+							<NextLink href="/forget-password">
+								<Link ml="auto">Forgot password?</Link>
+							</NextLink>
+						</Flex>
 						<Button
 							mt={4}
 							type="submit"
@@ -56,4 +63,4 @@ export const Login: React.FC<{}> = ({}) => {
 	);
 };
 
-export default Login;
+export default withUrqlClient(createUrqlClient)(Login);
