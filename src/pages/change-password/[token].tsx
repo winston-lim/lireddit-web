@@ -11,8 +11,10 @@ import { useChangePasswordMutation } from "../../generated/graphql";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/create-urql-client";
 import NextLink from "next/link";
-export const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
+export const ChangePassword: NextPage<{}> = () => {
 	const router = useRouter();
+	const token =
+		typeof router.query.token === "string" ? router.query.token : "";
 	const [, changePassword] = useChangePasswordMutation();
 	const [tokenError, setTokenError] = useState("");
 	return (
@@ -64,12 +66,6 @@ export const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
 			</Formik>
 		</Wrapper>
 	);
-};
-
-ChangePassword.getInitialProps = ({ query }) => {
-	return {
-		token: query.token as string,
-	};
 };
 
 export default withUrqlClient(createUrqlClient)(
