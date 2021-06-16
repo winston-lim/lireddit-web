@@ -5,12 +5,12 @@ import NextLink from "next/link";
 import { MeQuery, useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isServer } from "../utils/is-server";
 
-interface NavBarProps {
-	meFetching: boolean;
-	meData: MeQuery | undefined;
-}
+interface NavBarProps {}
 
-export const NavBar: React.FC<NavBarProps> = ({ meFetching, meData }) => {
+export const NavBar: React.FC<NavBarProps> = ({}) => {
+	const [{ data: meData, fetching: meFetching }] = useMeQuery({
+		pause: isServer(),
+	});
 	const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
 	let body = null;
 	if (meFetching) {

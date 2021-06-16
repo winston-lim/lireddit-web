@@ -5,19 +5,12 @@ import { Wrapper, WrapperVariant } from "./Wrapper";
 
 interface WrapperProps {
 	variant?: WrapperVariant;
-	meFetching: boolean;
-	meData: MeQuery | undefined;
 }
 
-export const Layout: React.FC<WrapperProps> = ({
-	variant,
-	meFetching,
-	meData,
-	children,
-}) => {
+export const Layout: React.FC<WrapperProps> = ({ variant, children }) => {
 	return (
 		<>
-			<NavBar meFetching={meFetching} meData={meData} />
+			<NavBar />
 			<Wrapper variant={variant}>{children}</Wrapper>
 		</>
 	);

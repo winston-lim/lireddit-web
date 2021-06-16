@@ -21,9 +21,6 @@ const Index = () => {
 		limit: 15,
 		cursor: null as null | string,
 	});
-	const [{ data: meData, fetching: meFetching }] = useMeQuery({
-		pause: isServer(),
-	});
 	const [{ data, fetching }] = usePostsQuery({
 		variables,
 	});
@@ -31,7 +28,7 @@ const Index = () => {
 		return <div> No posts available now</div>;
 	}
 	return (
-		<Layout meData={meData} meFetching={meFetching}>
+		<Layout>
 			<Flex align="center">
 				<Heading>LiReddit</Heading>
 				<NextLink href="/create-post">
