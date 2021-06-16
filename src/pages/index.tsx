@@ -1,6 +1,10 @@
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/create-urql-client";
-import { useMeQuery, usePostsQuery } from "../generated/graphql";
+import {
+	useDeletePostMutation,
+	useMeQuery,
+	usePostsQuery,
+} from "../generated/graphql";
 import { Layout } from "../components/Layout";
 import NextLink from "next/link";
 import {
@@ -8,6 +12,7 @@ import {
 	Button,
 	Flex,
 	Heading,
+	IconButton,
 	Link,
 	Stack,
 	Text,
@@ -15,6 +20,7 @@ import {
 import React, { useState } from "react";
 import { isServer } from "../utils/is-server";
 import { UpvoteSection } from "../components/UpvoteSection";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 const Index = () => {
 	const [variables, setVariables] = useState({
@@ -24,6 +30,7 @@ const Index = () => {
 	const [{ data, fetching }] = usePostsQuery({
 		variables,
 	});
+	const [, deletePost] = useDeletePostMutation();
 	if (!fetching && !data) {
 		return <div> No posts available now</div>;
 	}
@@ -36,15 +43,25 @@ const Index = () => {
 					{data!.posts.posts.map((p) => (
 						<Flex key={p.id} p={5} shadow="md" borderWidth="1px">
 							<UpvoteSection post={p}></UpvoteSection>
-							<Box>
+							<Box flex={1}>
 								<NextLink href="/post/[id]" as={`/post/${p.id}`}>
 									<Link>
 										<Heading fontSize="xl">{p.title}</Heading>
 									</Link>
 								</NextLink>
-
 								<Text>posted by: {p.creator.username}</Text>
 								<Text mt={4}>{p.textSnippet}...</Text>
+								<Flex>
+									<IconButton
+										ml="auto"
+										aria-label="Delete Post"
+										color="red"
+										onClick={() => {
+											deletePost({ id: p.id });
+										}}
+										icon={<DeleteIcon />}
+									/>
+								</Flex>
 							</Box>
 						</Flex>
 					))}
