@@ -27,6 +27,14 @@ import Router from "next/router";
 import gql from "graphql-tag";
 import { isServer } from "./is-server";
 
+const invalidateAllPosts = (cache: Cache) => {
+	const allFields = cache.inspectFields("Query");
+	const fieldInfos = allFields.filter((info) => info.fieldName === "posts");
+	fieldInfos.forEach((fieldInfo) => {
+		cache.invalidate("Query", "posts", fieldInfo.arguments);
+	});
+};
+
 export const errorExchange: Exchange =
 	({ forward }) =>
 	(ops$) => {
@@ -134,6 +142,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
 									}
 								}
 							);
+							invalidateAllPosts(cache);
 						},
 						register: (_result, args, cache, info) => {
 							typedUpdateQuery<RegisterMutation, MeQuery>(
@@ -176,13 +185,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
 							);
 						},
 						createPost: (_result, args, cache, info) => {
-							const allFields = cache.inspectFields("Query");
-							const fieldInfos = allFields.filter(
-								(info) => info.fieldName === "posts"
-							);
-							fieldInfos.forEach((fieldInfo) => {
-								cache.invalidate("Query", "posts", fieldInfo.arguments);
-							});
+							invalidateAllPosts(cache);
 						},
 						vote: (_result, args, cache, info) => {
 							const { postId, value } = args as VoteMutationVariables;
