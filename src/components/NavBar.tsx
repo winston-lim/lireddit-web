@@ -1,4 +1,4 @@
-import { Box, Link } from "@chakra-ui/layout";
+import { Box, Heading, Link } from "@chakra-ui/layout";
 import { Button, Flex } from "@chakra-ui/react";
 import React from "react";
 import NextLink from "next/link";
@@ -33,7 +33,12 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
 	} else {
 		// user is logged in
 		body = (
-			<Flex>
+			<Flex align="center">
+				<NextLink href="/create-post">
+					<Button bgColor="white" as={Link} mr={4}>
+						create post
+					</Button>
+				</NextLink>
 				<Box mr={2} textColor="white">
 					{meData?.me.username}
 				</Box>
@@ -51,8 +56,22 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
 		);
 	}
 	return (
-		<Flex position="sticky" top={0} zIndex={1} bg="tomato" p={4}>
-			<Box ml={"auto"}>{body}</Box>
+		<Flex
+			position="sticky"
+			top={0}
+			zIndex={1}
+			bg="tomato"
+			p={4}
+			justify="center"
+		>
+			<Flex flex={1} align="center" maxW={800}>
+				<NextLink href="/">
+					<Link>
+						<Heading>LiReddit</Heading>
+					</Link>
+				</NextLink>
+				<Box ml={"auto"}>{body}</Box>
+			</Flex>
 		</Flex>
 	);
 };
