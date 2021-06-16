@@ -4,10 +4,12 @@ import React from "react";
 import NextLink from "next/link";
 import { MeQuery, useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isServer } from "../utils/is-server";
+import { useRouter } from "next/router";
 
 interface NavBarProps {}
 
 export const NavBar: React.FC<NavBarProps> = ({}) => {
+	const router = useRouter();
 	const [{ data: meData, fetching: meFetching }] = useMeQuery({
 		pause: isServer(),
 	});
@@ -43,8 +45,9 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
 					{meData?.me.username}
 				</Box>
 				<Button
-					onClick={() => {
-						logout();
+					onClick={async () => {
+						await logout();
+						router.reload();
 					}}
 					isLoading={logoutFetching}
 					variant="link"
